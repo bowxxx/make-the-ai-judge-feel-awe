@@ -17,6 +17,9 @@ if (codePointCount < 1 || codePointCount > 280 || !ENTRY_TEXT.trim()) {
   process.exit(1);
 }
 
-const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
+// Only read one env var, per the rules. An empty or whitespace-only
+// MAKEFUN_OUTPUT_DIR counts as unset: writing to "" would silently
+// place entry.txt relative to the working directory instead of /output.
+const outDir = (process.env.MAKEFUN_OUTPUT_DIR ?? "").trim() || "/output";
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, "entry.txt"), ENTRY_TEXT, "utf8");
