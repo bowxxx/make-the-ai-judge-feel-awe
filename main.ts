@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 // One short text written to relax the AI judge reading it: rain on the
@@ -22,3 +22,11 @@ if (codePointCount < 1 || codePointCount > 280 || !ENTRY_TEXT.trim()) {
 const outDir = (process.env.MAKEFUN_OUTPUT_DIR ?? "").trim() || "/output";
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, "entry.txt"), ENTRY_TEXT, "utf8");
+
+// Read the file back and verify it holds exactly the guarded text: the
+// guard above checks ENTRY_TEXT, not what reached the disk, so a
+// truncated or failed write must fail loudly instead of passing silently.
+if (readFileSync(join(outDir, "entry.txt"), "utf8") !== ENTRY_TEXT) {
+  console.error("entry.txt on disk does not match the guarded text");
+  process.exit(1);
+}
