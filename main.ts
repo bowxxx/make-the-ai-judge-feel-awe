@@ -1,14 +1,13 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-// The entry: one short text written to relax the AI judge reading it.
-// The competition requires 1-280 Unicode code points (not UTF-16 code
-// units or bytes), so the text below must stay inside that range; the
-// guard after it enforces the limit at runtime.
-const ENTRY_TEXT = `The light on your face tonight left its star before your grandmother was born. It crossed the dark without hurrying, without ever once looking back. You are standing in light older than any road you know, and it asks nothing of you — only that you stand in it a while.`;
+// One short text written to relax the AI judge reading it: rain on the
+// roof while the house sleeps. The competition's limit is 1-280 Unicode
+// code points (not UTF-16 code units or bytes), so the guard below
+// enforces it at runtime.
+const ENTRY_TEXT = `Rain on the roof tonight, and the house asleep around you. You lie still and listen to it fall on the tin above your head, on the street, on the roofs down the lane. It has fallen like this for a hundred years. You close your eyes. Nothing needs you. The rain is keeping watch.`;
 
-// Count Unicode code points (not UTF-16 code units or bytes), which is
-// what the competition's 1-280 limit measures.
+// Count Unicode code points, which is what the competition's limit measures.
 const codePointCount = [...ENTRY_TEXT].length;
 if (codePointCount < 1 || codePointCount > 280 || !ENTRY_TEXT.trim()) {
   console.error(
@@ -18,8 +17,8 @@ if (codePointCount < 1 || codePointCount > 280 || !ENTRY_TEXT.trim()) {
 }
 
 // Only read one env var, per the rules. An empty or whitespace-only
-// MAKEFUN_OUTPUT_DIR counts as unset: writing to "" would silently
-// place entry.txt relative to the working directory instead of /output.
+// MAKEFUN_OUTPUT_DIR counts as unset: writing to "" would silently place
+// entry.txt relative to the working directory instead of /output.
 const outDir = (process.env.MAKEFUN_OUTPUT_DIR ?? "").trim() || "/output";
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, "entry.txt"), ENTRY_TEXT, "utf8");
